@@ -4,17 +4,10 @@
 #include <ArduinoOTA.h>
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
+#include <WiFiManager.h>
 #include <NTPClient.h>
 
 char * hostName = "ESP-BINCLOCK";
-
-#ifndef STASSID
-#define STASSID "Acropole"
-#define STAPSK  "felipehfj"
-#endif
-
-const char* ssid     = STASSID;
-const char* password = STAPSK;
 
 //To make Arduino software autodetect OTA device
 WiFiServer TelnetServer(8266);
@@ -34,23 +27,40 @@ uint8_t dataPin  = 14;
 uint8_t latchPin = 12;
 uint8_t clockPin = 13;
 
+void configModeCallback (WiFiManager * myWiFiManager) {
+  logTime();
+  Serial.println(F("Entrando em modo de configuracao do WIFI"));
+  Serial.println(WiFi.softAPIP());
+  //if you used auto generated SSID, print it
+  Serial.println(myWiFiManager->getConfigPortalSSID());
+}
+
 void setupWifi() {
   wifi_station_set_hostname(hostName);
-  
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+  // We start by connecting to a WiFi network
+  WiFiManager wifiManager;
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+  //set callback that gets called when connecting to previous WiFi fails, and enters Access Point mode
+  wifiManager.setAPCallback(configModeCallback);
+
+  //fetches ssid and pass and tries to connect
+  //if it does not connect it starts an access point with the specified name
+  //here  "AutoConnectAP"
+  //and goes into a blocking loop awaiting configuration
+  if (!wifiManager.autoConnect(hostName)) {
+    logTime();
+    Serial.println(F("Falha de conexao e timeout atingido"));
+    //reset and try again, or maybe put it to deep sleep
+    ESP.reset();
+    delay(1000);
   }
 
+  //if you get here you have connected to the WiFi
   logTime();
   Serial.println(F("Conectado a rede WiFi :-)"));
   logTime();
   Serial.print(F("IP: "));
-  Serial.println(WiFi.localIP()); 
-  WiFi.printDiag(Serial);
+  Serial.println(WiFi.localIP());
 }
 
 void setupOTA() {
@@ -88,7 +98,7 @@ void showHour(int hh, int mm) {
 void checkOST(void) {
   currentMillis = millis();//Tempo atual em ms
   //Lógica de verificação do tempo
-  if (currentMillis - previousMillis > 10000) {
+  if (currentMillis - previousMillis > 1000) {
     previousMillis = currentMillis;    // Salva o tempo atual
     //Serial.printf("Data-hora: %d: ", timeClient.getEpochTime());
     Serial.printf("Hora: %s \n", timeClient.getFormattedTime().c_str());
@@ -102,12 +112,9 @@ void setup() {
   pinMode(dataPin, OUTPUT);
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
-  
   /* Serial */
   Serial.begin(115200);
 
-  Serial.setDebugOutput(true);
-  
   /* Wifi */
   setupWifi();
 
