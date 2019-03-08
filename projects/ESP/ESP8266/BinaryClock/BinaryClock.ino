@@ -92,7 +92,7 @@ void showHour(int hh, int mm) {
   digitalWrite(latchPin, HIGH);
   digitalWrite(hControl, LOW);
   digitalWrite(mControl, HIGH);
-  delayMicroseconds(25                                                                          0);
+  delayMicroseconds(250);
 }
 
 void checkOST(void) {
