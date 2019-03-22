@@ -17,4 +17,13 @@ getHours	KEYWORD2
 getMinutes	KEYWORD2
 getSeconds	KEYWORD2
 getFormattedTime	KEYWORD2
+getFormattedDate	KEYWORD2
 getEpochTime	KEYWORD2
+
+setEpochTime	KEYWORD2
+setTimeOffset	KEYWORD2
+setUpdateInterval	KEYWORD2
+
+getMonth 	KEYWORD2
+getDayOfMonth	KEYWORD2
+getYear		KEYWORD2
