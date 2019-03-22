@@ -41,6 +41,7 @@ static const char WIFI_CONNECTING[] PROGMEM = "Conectando......";
 static const char WIFI_CONNECTING_OK[] PROGMEM = "  Conexao OK!   ";
 static const char WIFI_CONNECTING_IP[] PROGMEM = "  Endereco IP   ";
 
-static const char RFID_READED[] PROGMEM = "Detectado cartao";
+static const char RFID_READED[] PROGMEM = "  Cartao lido   ";
 static const char RFID_GET_AUTH[] PROGMEM = "Consultando.....";
 static const char RFID_GET_CARD[] PROGMEM = " Aproxime a TAG ";
+static const char RFID_PLEASEWAITING[] PROGMEM = "favor aguardar  ";

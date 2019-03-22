@@ -39,7 +39,7 @@ void setup() {
   Serial.println(wifiName);
 
   lcd.setCursor(0, 0);
-  lcd.print("Connecting to ");
+  lcd.print(FPSTR(WIFI_CONNECTING));
   lcd.setCursor(0, 1);
   lcd.print(wifiName);
 
@@ -95,7 +95,7 @@ void loop() {
 
   Serial.println();
   Serial.print(FPSTR(RFID_GET_AUTH));
-  Serial.println(url.c_str());
+  Serial.println(url.c_str());  
 
   HTTPClient http;    //Declare object of class HTTPClient
 
@@ -104,6 +104,11 @@ void loop() {
   Serial.print("Request Link:");
   Serial.println(path.c_str());
 
+  lcd.setCursor(0, 0);
+  lcd.print(FPSTR(RFID_GET_AUTH));
+  lcd.setCursor(0, 1);
+  lcd.print(FPSTR(RFID_PLEASEWAITING));
+  
   http.begin(host, 3000, url.c_str());     //Specify request destination
 
   int httpCode = http.GET();            //Send the request
@@ -161,5 +166,5 @@ void loop() {
 
   http.end();  //Close connection
   lcd.clear();
-  delay(1000);
+  delay(10);
 }
